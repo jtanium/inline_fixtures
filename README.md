@@ -23,26 +23,23 @@ That's a trivial example to give you a feel. The real benefit comes when you wan
 
       describe ".last_3_months_revenue" do
         it "should return the revenue report" do
+          account_ids = inline_fixture :accounts, [:name] { [["Example Account 1"], ["Example Account 2"], ["Example Account 3"]] }
+          two_months_ago = 2.months.ago.to_s(:db)
+          last_month     = 1.month.ago.to_s(:db)
+          this_month     = Date.today.to_s(:db)
           inline_fixture :invoices, [:date, :amount, :account_id] do
-            two_months_ago = 2.months.ago.to_s(:db)
-            last_month     = 1.month.ago.to_s(:db)
-            this_month     = Date.today.to_s(:db)
-            acct_1_id      = inline_fixture(:accounts, :name => "Example Account 1")
-            acct_2_id      = inline_fixture(:accounts, :name => "Example Account 2")
-            acct_3_id      = inline_fixture(:accounts, :name => "Example Account 3")
-
             [
-              [3.months.ago.to_s(:db), "14.00", acct_2_id],
-              [two_months_ago, "27.00", acct_1_id],
-              [two_months_ago, "88.00", acct_2_id],
-              [two_months_ago, "104.00", acct_3_id],
-              [last_month, "30.00", acct_1_id],
-              [last_month, "120.00", acct_2_id],
-              [last_month, "96.00", acct_3_id],
-              [this_month, "63.00", acct_1_id],
-              [this_month, "144.00", acct_2_id],
-              [this_month, "103.00", acct_3_id]
-              [1.months.from_now.to_s(:db), "29.00", acct_1_id],
+              [3.months.ago.to_s(:db), "14.00", account_ids[1]],
+              [two_months_ago, "27.00", account_ids[0]],
+              [two_months_ago, "88.00", account_ids[1]],
+              [two_months_ago, "104.00", account_ids[2]],
+              [last_month, "30.00", account_ids[0]],
+              [last_month, "120.00", account_ids[1]],
+              [last_month, "96.00", account_ids[2]],
+              [this_month, "63.00", account_ids[0]],
+              [this_month, "144.00", account_ids[1]],
+              [this_month, "103.00", account_ids[2]]
+              [1.months.from_now.to_s(:db), "29.00", account_ids[0]],
             ]
           end
           Report.last_3_months_revenue.should == 775.0
