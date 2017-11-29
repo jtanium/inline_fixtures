@@ -1,4 +1,5 @@
 require "inline_fixtures/version"
+require "active_record"
 
 module InlineFixtures
   def inline_fixture(table_name, data_or_columns=nil)
