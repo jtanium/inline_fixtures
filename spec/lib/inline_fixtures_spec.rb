@@ -8,21 +8,21 @@ ExampleClass.class.send(:include, InlineFixtures)
 
 
 describe InlineFixtures do
-  let(:ar_connection) { mock('ar_connection') }
+  let(:ar_connection) { double('ar_connection') }
   before do
     ActiveRecord::Base.stub(:connection).and_return(ar_connection)
-    ar_connection.stub(:insert_sql).and_return(19)
+    ar_connection.stub(:insert).and_return(19)
   end
   describe "#inline_fixture" do
     context "when a hash is given" do
       it "should create and execute sql" do
-        ar_connection.should_receive(:insert_sql).with("INSERT INTO foos (bar) VALUES ('quux')")
+        ar_connection.should_receive(:insert).with("INSERT INTO foos (bar) VALUES ('quux')")
         ExampleClass.inline_fixture :foos, :bar => "quux"
 
         attributes = {:baz => 'grault', :bar => "quux"}
         key_list = attributes.keys.join(', ')
         value_list = "'#{attributes.values.join("', '")}'"
-        ar_connection.should_receive(:insert_sql).with("INSERT INTO foos (#{key_list}) VALUES (#{value_list})")
+        ar_connection.should_receive(:insert).with("INSERT INTO foos (#{key_list}) VALUES (#{value_list})")
         ExampleClass.inline_fixture :foos, attributes
       end
       it "should return the auto generated id" do
@@ -33,7 +33,7 @@ describe InlineFixtures do
       let(:column_names) { [:first, :second, :third, :fourth, :fifth, :sixth] }
       let(:fixture_records) { [%w{1 2 3 4 5 6}, %w{x y z a b c}, %w{word word word word word word}] }
       it "should create and execute sql" do
-        ar_connection.should_receive(:insert_sql).with("INSERT INTO foos (first, second, third, fourth, fifth, sixth) VALUES ('1', '2', '3', '4', '5', '6'), ('x', 'y', 'z', 'a', 'b', 'c'), ('word', 'word', 'word', 'word', 'word', 'word')")
+        ar_connection.should_receive(:insert).with("INSERT INTO foos (first, second, third, fourth, fifth, sixth) VALUES ('1', '2', '3', '4', '5', '6'), ('x', 'y', 'z', 'a', 'b', 'c'), ('word', 'word', 'word', 'word', 'word', 'word')")
         ExampleClass.inline_fixture(:foos, column_names) { fixture_records }
       end
       it "should return the auto generated ids" do
@@ -49,7 +49,7 @@ describe InlineFixtures do
         key_list = attributes_3.keys.join(', ')
         value_list = "'#{attributes_1.values.join("', '")}'), ('#{attributes_2.values.join("', '")}'), ('#{attributes_3.values.join("', '")}'"
 
-        ar_connection.should_receive(:insert_sql).with("INSERT INTO foos (#{key_list}) VALUES (#{value_list})")
+        ar_connection.should_receive(:insert).with("INSERT INTO foos (#{key_list}) VALUES (#{value_list})")
         ExampleClass.inline_fixture(:foos) { fixture_records }
       end
       it "should return the auto generated ids" do
