@@ -21,4 +21,5 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency "activerecord", "~> 2.2.0"
 
   gem.add_development_dependency "rspec", "~> 2.12.0"
+  gem.required_ruby_version = ">= 2.2.2"
 end
