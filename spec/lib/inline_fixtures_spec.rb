@@ -8,7 +8,7 @@ ExampleClass.class.send(:include, InlineFixtures)
 
 
 describe InlineFixtures do
-  let(:ar_connection) { mock('ar_connection') }
+  let(:ar_connection) { double('ar_connection') }
   before do
     ActiveRecord::Base.stub(:connection).and_return(ar_connection)
     ar_connection.stub(:insert_sql).and_return(19)
